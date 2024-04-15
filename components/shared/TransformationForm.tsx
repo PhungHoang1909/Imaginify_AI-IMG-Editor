@@ -43,7 +43,7 @@ export const formSchema = z.object({
 const TransformationForm = ({ action, data = null, userId, type, creditBalance, config = null } : TransformationFormProps) => {
 
   const transformationType = transformationTypes[type];
-  const [Image, setImage] = useState(data)
+  const [image, setImage] = useState(data)
   const [newTransformation, setnewTransformation] = useState<Transformations | null>(null)
   const initialValues = data && action === 'Update' ? {
     title: data?.title,
@@ -198,13 +198,13 @@ const TransformationForm = ({ action, data = null, userId, type, creditBalance, 
           </div>
         )}
 
-        <div className="media-uploader-field">
-          <CustomField
+          <div className="media-uploader-field">
+          <CustomField 
             control={form.control}
             name="publicId"
             className="flex size-full flex-col"
             render={({ field }) => (
-              <MediaUploader
+              <MediaUploader 
                 onValueChange={field.onChange}
                 setImage={setImage}
                 publicId={field.value}
@@ -213,7 +213,7 @@ const TransformationForm = ({ action, data = null, userId, type, creditBalance, 
               />
             )}
           />
-        </div>
+          </div>
         
 
         <div className="flex flex-col gap-4">
