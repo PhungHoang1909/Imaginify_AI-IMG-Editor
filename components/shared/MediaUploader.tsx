@@ -1,56 +1,55 @@
 "use client";
 
+import { useToast } from "@/components/ui/use-toast"
 import { dataUrl, getImageSize } from "@/lib/utils";
-import { useToast } from "../ui/use-toast"
-import { CldImage, CldUploadWidget } from 'next-cloudinary'
-import Image from "next/image"
+import { CldImage, CldUploadWidget } from "next-cloudinary"
 import { PlaceholderValue } from "next/dist/shared/lib/get-img-props";
+import Image from "next/image";
 
 type MediaUploaderProps = {
-    onValueChange: (value: string) => void;
-    setImage: React.Dispatch<any>;
-    publicId: string;
-    image: any;
-    type: string;
+  onValueChange: (value: string) => void;
+  setImage: React.Dispatch<any>;
+  publicId: string;
+  image: any;
+  type: string;
 }
 
 const MediaUploader = ({
-    onValueChange,
-    setImage,
-    image,
-    publicId,
-    type
+  onValueChange,
+  setImage,
+  image,
+  publicId,
+  type
 }: MediaUploaderProps) => {
-    const {toast} = useToast()
+  const { toast } = useToast()
 
-    const onUploadSuccessHandler = (result: any) => {
+  const onUploadSuccessHandler = (result: any) => {
+    setImage((prevState: any) => ({
+      ...prevState,
+      publicId: result?.info?.public_id,
+      width: result?.info?.width,
+      height: result?.info?.height,
+      secureURL: result?.info?.secure_url
+    }))
 
-        setImage((prevState: any) => ({
-            ...prevState, 
-            publicId: result?.info?.public_id,
-            width: result?.info?.width,
-            height: result?.info?.height,
-            secureURL: result?.info?.secure_url
-        }))
+    onValueChange(result?.info?.public_id)
 
-        onValueChange(result?.info?.public_id)
+    toast({
+      title: 'Image uploaded successfully',
+      description: '1 credit was deducted from your account',
+      duration: 5000,
+      className: 'success-toast' 
+    })
+  }
 
-        toast({
-            title: 'Image uploaded succesfully',
-            description: '1 credit was deducted from your account',
-            duration: 5000,
-            className: 'success-toast'
-        })
-    }
-
-    const onUploadErrorHandler = (result: any) => {
-        toast({
-            title: 'Somethign went wrong',
-            description: 'Please try again',
-            duration: 5000,
-            className: 'error-toast'
-        })
-    }
+  const onUploadErrorHandler = () => {
+    toast({
+      title: 'Something went wrong while uploading',
+      description: 'Please try again',
+      duration: 5000,
+      className: 'error-toast' 
+    })
+  }
 
   return (
     <CldUploadWidget
@@ -71,14 +70,14 @@ const MediaUploader = ({
           {publicId ? (
             <>
               <div className="cursor-pointer overflow-hidden rounded-[10px]">
-                <CldImage
-                    width={getImageSize(type, image, "width")}
-                    height={getImageSize(type, image, "height")}
-                    src={publicId}
-                    alt="image"
-                    sizes={"(max-width: 767px) 1--vw, 50ww"}
-                    placeholder={dataUrl as PlaceholderValue }
-                    className="media-uploader_cldImage"
+                <CldImage 
+                  width={getImageSize(type, image, "width")}
+                  height={getImageSize(type, image, "height")}
+                  src={publicId}
+                  alt="image"
+                  sizes={"(max-width: 767px) 100vw, 50vw"}
+                  placeholder={dataUrl as PlaceholderValue}
+                  className="media-uploader_cldImage"
                 />
               </div>
             </>
